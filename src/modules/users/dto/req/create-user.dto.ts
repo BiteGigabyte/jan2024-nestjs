@@ -1,6 +1,5 @@
-import { Transform, Type } from 'class-transformer';
+import { Transform } from 'class-transformer';
 import {
-  IsArray,
   IsEmail,
   IsNotIn,
   IsOptional,
@@ -8,23 +7,10 @@ import {
   Length,
   Matches,
   ValidateIf,
-  ValidateNested,
 } from 'class-validator';
 
 import { TransformHelper } from '../../../../common/helpers/transform.helper';
 import { AgeValid } from '../../decorators/age-valid.decorator';
-
-class CreateCarDto {
-  @Transform(TransformHelper.trim)
-  @IsString()
-  @Length(2, 20)
-  public readonly model: string;
-
-  @Transform(TransformHelper.trim)
-  @IsString()
-  @Length(2, 20)
-  public readonly producer: string;
-}
 
 export class CreateUserDto {
   @Transform(TransformHelper.trim)
@@ -52,10 +38,4 @@ export class CreateUserDto {
   @ValidateIf((object) => object.age === 35)
   @IsOptional()
   public readonly phone?: string;
-
-  @IsOptional()
-  @ValidateNested({ each: true })
-  @Type(() => CreateCarDto)
-  @IsArray()
-  cars: CreateCarDto[];
 }
