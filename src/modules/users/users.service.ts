@@ -1,15 +1,22 @@
 import { Injectable } from '@nestjs/common';
 
+import { LoggerService } from '../logger/logger.service';
 import { PostsService } from '../posts/posts.service';
-import { CreateUserDto } from './dto/req/create-user.dto';
-import { UpdateUserDto } from './dto/req/update-user.dto';
+// import { CreateUserDto } from './dto/req/create-user.dto';
+// import { UpdateUserDto } from './dto/req/update-user.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly carsService: PostsService) {}
+  constructor(
+    private readonly carsService: PostsService,
+    private readonly logger: LoggerService,
+  ) {}
 
-  public async create(createUserDto: CreateUserDto): Promise<any> {
+  // public async create(createUserDto: CreateUserDto): Promise<any> {
+  public async create(): Promise<any> {
     this.carsService.create({});
+    this.logger.log('This is a test message');
+    throw new Error('This is a test error');
     return 'This action adds a new user';
   }
 
@@ -23,7 +30,7 @@ export class UsersService {
 
   public async updateMe(
     id: number,
-    updateUserDto: UpdateUserDto,
+    // updateUserDto: UpdateUserDto,
   ): Promise<any> {
     return `This action updates a #${id} user`;
   }
