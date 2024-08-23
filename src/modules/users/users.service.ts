@@ -2,6 +2,10 @@ import { Injectable } from '@nestjs/common';
 
 import { LoggerService } from '../logger/logger.service';
 import { PostsService } from '../posts/posts.service';
+import { ArticleRepository } from '../repository/services/article.repository';
+import { UserRepository } from '../repository/services/user.repository';
+import { CreateUserDto } from './dto/req/create-user.dto';
+import { UpdateUserDto } from './dto/req/update-user.dto';
 // import { CreateUserDto } from './dto/req/create-user.dto';
 // import { UpdateUserDto } from './dto/req/update-user.dto';
 
@@ -10,14 +14,18 @@ export class UsersService {
   constructor(
     private readonly carsService: PostsService,
     private readonly logger: LoggerService,
+    private readonly userRepository: UserRepository,
+    private readonly articleRepository: ArticleRepository,
   ) {}
 
-  // public async create(createUserDto: CreateUserDto): Promise<any> {
-  public async create(): Promise<any> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public async create(createUserDto: CreateUserDto): Promise<any> {
     this.carsService.create({});
-    this.logger.log('This is a test message');
-    throw new Error('This is a test error');
-    return 'This action adds a new user';
+    return await this.userRepository.save({
+      name: 'John Doe',
+      email: 'test@test.com',
+      password: 'password123',
+    });
   }
 
   public async findAll(): Promise<any> {
@@ -30,7 +38,8 @@ export class UsersService {
 
   public async updateMe(
     id: number,
-    // updateUserDto: UpdateUserDto,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    updateUserDto: UpdateUserDto,
   ): Promise<any> {
     return `This action updates a #${id} user`;
   }
