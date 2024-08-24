@@ -2,12 +2,9 @@ import { Injectable } from '@nestjs/common';
 
 import { LoggerService } from '../logger/logger.service';
 import { PostsService } from '../posts/posts.service';
-import { ArticleRepository } from '../repository/services/article.repository';
 import { UserRepository } from '../repository/services/user.repository';
 import { CreateUserDto } from './dto/req/create-user.dto';
 import { UpdateUserDto } from './dto/req/update-user.dto';
-// import { CreateUserDto } from './dto/req/create-user.dto';
-// import { UpdateUserDto } from './dto/req/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -15,7 +12,6 @@ export class UsersService {
     private readonly carsService: PostsService,
     private readonly logger: LoggerService,
     private readonly userRepository: UserRepository,
-    private readonly articleRepository: ArticleRepository,
   ) {}
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
