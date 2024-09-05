@@ -6,8 +6,9 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  Patch,
-  UseGuards,
+  ParseUUIDPipe,
+  Post,
+  Put,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -42,15 +43,18 @@ export class UsersController {
     return UserMapper.toResponseDTO(result);
   }
 
-  @UseGuards()
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiBearerAuth()
   @ApiForbiddenResponse({ description: 'Forbidden' })
   @ApiConflictResponse({ description: 'Conflict' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  @Patch('me')
-  public async updateMe(@Body() dto: UpdateUserDto): Promise<UserResDto> {
-    return await this.usersService.updateMe(1, dto);
+  @Put('me')
+  public async updateMe(
+    @CurrentUser() userData: IUserData,
+    @Body() dto: UpdateUserDto,
+  ): Promise<UserResDto> {
+    const result = await this.usersService.updateMe(userData, dto);
+    return UserMapper.toResponseDTO(result);
   }
 
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
@@ -60,13 +64,34 @@ export class UsersController {
   @ApiNoContentResponse({ description: 'User has been removed' })
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('me')
-  public async removeMe(): Promise<void> {
-    return await this.usersService.removeMe(1);
+  public async removeMe(@CurrentUser() userData: IUserData): Promise<void> {
+    return await this.usersService.removeMe(userData);
   }
 
   @SkipAuth()
   @Get(':userId')
   public async findOne(@Param('userId') userId: string): Promise<UserResDto> {
-    return await this.usersService.findOne(+userId);
+    const result = await this.usersService.findOne(userId);
+    return UserMapper.toResponseDTO(result);
+  }
+
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Post(':userId/follow')
+  public async follow(
+    @CurrentUser() userData: IUserData,
+    @Param('userId', ParseUUIDPipe) userId: string,
+  ): Promise<void> {
+    await this.usersService.follow(userData, userId);
+  }
+
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete(':userId/unfollow')
+  public async unfollow(
+    @CurrentUser() userData: IUserData,
+    @Param('userId', ParseUUIDPipe) userId: string,
+  ): Promise<void> {
+    await this.usersService.unfollow(userData, userId);
   }
 }
